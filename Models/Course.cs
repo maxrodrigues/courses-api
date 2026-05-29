@@ -10,6 +10,8 @@ namespace CoursesApi.Models
         [JsonIgnore]
         public int Id { get; set; }
 
+        public int CategoryId { get; set; }
+
         public string Name { get; set; }
 
         public string Slug { get; set; }
@@ -20,7 +22,8 @@ namespace CoursesApi.Models
 
         public int Price { get; set; }
 
-        public Category Category { get; set; }
+        [JsonIgnore]
+        public Category? Category { get; set; }
 
         [JsonIgnore]
         public int Status { get; set; } = (int)CoursesStatus.Draft;
