@@ -1,9 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using CoursesApi.Enums;
 
 namespace CoursesApi.Models
 {
     public class Course
     {
+        [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -16,10 +20,13 @@ namespace CoursesApi.Models
 
         public int Price { get; set; }
 
-        public int Status { get; set; }
-
+        [JsonIgnore]
+        public int Status { get; set; } = (int)CoursesStatus.Draft;
+        
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [JsonIgnore]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }
