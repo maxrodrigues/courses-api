@@ -1,5 +1,6 @@
 using CoursesApi.Data;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<AppDbContext> (opt => opt.UseSqlite("Data Source=couses_api.db"));
+builder.Services.AddDbContext<AppDbContext> (opt => opt.UseSqlite("Data Source=courses_api.db"));
 
 var app = builder.Build();
 
@@ -16,6 +17,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference("/api-docs");
 }
 
 app.UseHttpsRedirection();
