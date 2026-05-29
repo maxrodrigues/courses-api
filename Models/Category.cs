@@ -4,7 +4,7 @@ using CoursesApi.Enums;
 
 namespace CoursesApi.Models
 {
-    public class Course
+    public class Category
     {
         [Key]
         [JsonIgnore]
@@ -12,23 +12,13 @@ namespace CoursesApi.Models
 
         public string Name { get; set; }
 
-        public string Slug { get; set; }
-
-        public string Description { get; set; }
-
-        public int Duration { get; set; }
-
-        public int Price { get; set; }
-
-        public Category Category { get; set; }
-
         [JsonIgnore]
-        public int Status { get; set; } = (int)CoursesStatus.Draft;
-        
-        [JsonIgnore]
+        public ICollection<Course> Courses { get; set; }
+
+        public int Status { get; set; } = (int)CategoryStatus.Active;
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        [JsonIgnore]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }
