@@ -13,7 +13,7 @@ namespace CoursesApi.Models
         public string Name { get; set; }
 
         [JsonIgnore]
-        public ICollection<Course> Courses { get; set; }
+        public ICollection<Course> Courses { get; } = [];
 
         public int Status { get; set; } = (int)CategoryStatus.Active;
 
