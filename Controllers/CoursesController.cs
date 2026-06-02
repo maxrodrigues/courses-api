@@ -2,7 +2,6 @@ using CoursesApi.Data;
 using CoursesApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Slugify;
 
 namespace CoursesApi.Controllers
 {
@@ -35,20 +34,31 @@ namespace CoursesApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourse(int id, Course course)
         {
-            var helper = new SlugHelper();
             var courseUpdated = await _appDbContext.Courses.FindAsync(id);
             if (courseUpdated is null)
                 return NotFound();
 
             courseUpdated.CategoryId = course.CategoryId;
             courseUpdated.Name = course.Name;
-            courseUpdated.Slug = helper.GenerateSlug(course.Name);
+            courseUpdated.Slug = course.Slug;
             courseUpdated.Description = course.Description;
             courseUpdated.Duration = course.Duration;
             courseUpdated.Price = course.Price;
 
             await _appDbContext.SaveChangesAsync();
             return NoContent();
+        }
+
+        public async Task<IActionResult> DeleteCourse (int id)
+        {
+            var course = await _appDbContext.Courses.FindAsync(id);
+            if (course is null)
+                return NotFound();
+            
+            _appDbContext.Courses.Remove(course);
+            await _appDbContext.SaveChangesAsync();
+
+            return NoContent();            
         }
     }
 }
