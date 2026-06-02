@@ -1,7 +1,6 @@
-using CoursesApi.Data;
 using CoursesApi.Models;
+using CoursesApi.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CoursesApi.Controllers
 {
@@ -9,55 +8,50 @@ namespace CoursesApi.Controllers
     [Route("api/courses")]
     public class CoursesController : ControllerBase
     {
-        private AppDbContext _appDbContext;
+        private readonly ICourseRepository _courseRepository;
         
-        public CoursesController(AppDbContext appDbContext)
+        public CoursesController(ICourseRepository courseRepository)
         {
-            _appDbContext = appDbContext;
+            _courseRepository = courseRepository;
         }
 
         [HttpPost]
         public async Task <IActionResult> AddCourse (Course course)
         {
-            _appDbContext.Courses.Add(course);
-            await _appDbContext.SaveChangesAsync();
+            await _courseRepository.AddAsync(course);
             return Created();
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCourses()
         {
-            var courses = await _appDbContext.Courses.ToListAsync();
+            var courses = await _courseRepository.GetAllAsync();
             return Ok(courses);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCourse(int id, Course course)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCourseById(int id)
         {
-            var courseUpdated = await _appDbContext.Courses.FindAsync(id);
-            if (courseUpdated is null)
+            var course = await _courseRepository.GetByIdAsync(id);
+            if (course == null)
                 return NotFound();
+            return Ok(course);
+        }
 
-            courseUpdated.CategoryId = course.CategoryId;
-            courseUpdated.Name = course.Name;
-            courseUpdated.Slug = course.Slug;
-            courseUpdated.Description = course.Description;
-            courseUpdated.Duration = course.Duration;
-            courseUpdated.Price = course.Price;
-
-            await _appDbContext.SaveChangesAsync();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCourse(int id, Course courseUpdated)
+        {
+            var course = await _courseRepository.GetByIdAsync(id);
+            if (course is null)
+                return NotFound();
+            
+            await _courseRepository.UpdateAsync(courseUpdated);
             return NoContent();
         }
 
         public async Task<IActionResult> DeleteCourse (int id)
         {
-            var course = await _appDbContext.Courses.FindAsync(id);
-            if (course is null)
-                return NotFound();
-            
-            _appDbContext.Courses.Remove(course);
-            await _appDbContext.SaveChangesAsync();
-
+            await _courseRepository.DeleteAsync(id);
             return NoContent();            
         }
     }

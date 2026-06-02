@@ -1,4 +1,6 @@
 using CoursesApi.Data;
+using CoursesApi.Repositories;
+using CoursesApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext> (opt => opt.UseSqlite("Data Source=courses_api.db"));
+
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 var app = builder.Build();
 
